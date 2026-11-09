@@ -1855,6 +1855,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMove
   moveSpeed: 5
+  sprintSpeed: 10
   mouseSensitivity: 0.1
   cameraTransform: {fileID: 562390963}
   maxPitch: 85

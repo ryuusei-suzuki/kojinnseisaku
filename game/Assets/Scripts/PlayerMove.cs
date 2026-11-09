@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 public class PlayerMove : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 5.0f;
+    [SerializeField] private float sprintSpeed = 5.6f;
     [SerializeField] private float mouseSensitivity = 0.1f;
     [SerializeField] private Transform cameraTransform;   // 上下に回すカメラ
     [SerializeField] private float maxPitch = 85f;        // 上下の限界角度
@@ -27,6 +28,7 @@ public class PlayerMove : MonoBehaviour
     private float pitch;        // 上下の向き
 
     private bool isGrounded;
+    private bool isSprinting;
     
     // jumpRequested【自作・変数】= 「ジャンプボタンが押された」というメモ
     private bool jumpRequested;
@@ -51,6 +53,7 @@ public class PlayerMove : MonoBehaviour
         if (Keyboard.current.sKey.isPressed) v -= 1f;
         inputDir = new Vector3(x, 0f, v);
 
+        isSprinting = Keyboard.current.leftShiftKey.isPressed && v >0f;
        
         // 「押された瞬間だけ true」になるプロパティを入れる
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
@@ -76,10 +79,22 @@ public class PlayerMove : MonoBehaviour
 
         Quaternion lookRotation = Quaternion.Euler(0f, yaw, 0f);
         rb.MoveRotation(lookRotation);
+        Vector3 moveDir = lookRotation * inputDir.normalized;
+        float currentSpeed;
+        if (isSprinting)
+        {
+            currentSpeed = sprintSpeed;
+        }
+        else
+        {
+            currentSpeed = moveSpeed;
+        }
 
-        Vector3 moveDir = lookRotation * inputDir;
 
-        Vector3 velocity = moveDir * moveSpeed;
+
+
+       
+        Vector3 velocity = moveDir * currentSpeed;
         velocity.y = rb.linearVelocity.y;
 
         
@@ -99,6 +114,7 @@ public class PlayerMove : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        
         Gizmos.color = isGrounded ? Color.green : Color.red;
         Gizmos.DrawWireSphere(transform.position + Vector3.up * groundChckOffset, groundCheckRadius);
     }
