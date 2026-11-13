@@ -4,12 +4,13 @@ using UnityEngine.InputSystem;
 
 public class PlayerMove : MonoBehaviour
 {
-    [SerializeField] private float moveSpeed = 5.0f;
+    [SerializeField] private float moveSpeed = 4.3f;
     [SerializeField] private float sprintSpeed = 5.6f;
     [SerializeField] private float mouseSensitivity = 0.1f;
     [SerializeField] private Transform cameraTransform;   // 上下に回すカメラ
     [SerializeField] private float maxPitch = 85f;        // 上下の限界角度
 
+    
     //LayerMaskどのレイヤーを対しょうにするか
     //insoectorで設定
     [SerializeField] private LayerMask groundLayer;
@@ -20,7 +21,9 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float groundChckOffset = 0.2f;
 
   
-    [SerializeField] private float jumpPower = 5f;
+    [SerializeField] private float jumpPower = 8.3f;
+
+    [SerializeField] private float gravity = 28f;
 
     private Rigidbody rb;
     private Vector3 inputDir;   // キー入力 x = 左右、z = 前後
@@ -89,14 +92,12 @@ public class PlayerMove : MonoBehaviour
         {
             currentSpeed = moveSpeed;
         }
-
-
-
-
        
         Vector3 velocity = moveDir * currentSpeed;
         velocity.y = rb.linearVelocity.y;
 
+        //下向きの速度 -= 重力 x 1回分の時間
+        velocity.y -= gravity * Time.fixedDeltaTime;
         
         if (jumpRequested)
         {
